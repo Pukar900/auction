@@ -1,0 +1,195 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+header {
+    background-color: #4a4e69;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: -75px;
+    flex-wrap: wrap;
+}
+
+.logo img {
+    height: 60px;
+    border-radius: 10px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-container form {
+    display: flex;
+    align-items: center;
+}
+
+.search-container input[type="text"] {
+    padding: 8px 12px;
+    border-radius: 5px 0 0 5px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    width: 200px;
+}
+
+.search-container button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #9a8c98;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0;
+}
+
+.search-container button:hover {
+    background-color: #c9ada7;
+}
+
+
+nav {
+    background-color: #22223b;
+    text-align: center;
+    padding: 10px 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+.hero {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.hero img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.hero-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    padding: 0 20px;
+}
+
+.welcome-message {
+    padding: 20px;
+    text-align: center;
+    background-color: #e4e4ef;
+    margin-top: 20px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+}
+
+.alert {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 800px;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid #c3e6cb;
+}
+
+.auction-section {
+    padding: 40px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.item-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.item-card:hover {
+    transform: scale(1.02);
+}
+
+.item-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.item-content {
+    padding: 15px;
+}
+
+.item-content h3 {
+    margin-top: 0;
+}
+
+.auth-section {
+    text-align: center;
+}
+
+.logout-btn {
+    background-color: #c1121f;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #a10d1b;
+}
+
+.add-auction-btn {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin-left: 84%;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.add-auction-btn:hover {
+    background-color: #388e3c;
+}
+
+
+footer {
+    background-color: #4a4e69;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 40px;
+}

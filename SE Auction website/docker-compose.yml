@@ -1,0 +1,75 @@
+version: '3.8'
+services:
+    updatecerts:
+        image: vjedev/certupdater:latest
+        volumes:
+            - certs:/certs
+            - mysqlconf:/mysqlconf
+    landingpage:
+        image: vjedev/landingpage:latest
+        volumes:
+            - ./websites:/websites
+    databaseimportexport:
+        image: vjedev/database-import-export:latest
+        volumes:
+            - ./websites:/websites
+        depends_on:
+            - mysql
+    web:
+        image: nginx:latest
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+            - certs:/certs
+            - ./websites:/websites
+        depends_on:
+            - updatecerts
+    php:
+        build:
+            context: .
+            dockerfile: PHP.Dockerfile
+        volumes:
+            - ./websites:/websites
+            - ./websites:/as1 
+    mysql:
+        image: mariadb:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: 'student'
+            MYSQL_USER: 'student'
+            MYSQL_PASSWORD: 'student'
+            MYSQL_DATABASE: 'auction'
+        volumes:
+            - mysqldata:/var/lib/mysql
+            - certs:/ssl
+            - mysqlconf:/etc/mysql/conf.d/
+        ports:
+            - 3306:3306
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+        - 8080:8080
+    phpunit:
+        image: phpunit/phpunit:latest
+        working_dir: /websites/default
+        volumes:
+            - ./websites:/websites
+        profiles:
+            - phpunit
+    composer:
+        image: composer:latest
+        working_dir: /websites/default
+        volumes:
+            - ./websites:/websites
+        profiles:
+            - composer
+    maildev:
+        image: maildev/maildev:latest
+
+volumes:
+    mysqldata: {}
+    certs: {}
+    mysqlconf: {}
