@@ -9,6 +9,12 @@ if (isset($_SESSION['login_success'])) {
     unset($_SESSION['login_success']);
 }
 
+// Fetch categories from the database
+$categoryStmt = $pdo->prepare("SELECT * FROM category ORDER BY name ASC");
+$categoryStmt->execute();
+$categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
+$category_id = isset($_POST['category']) ? $_POST['category'] : ''; // Check if category is set
+
 // Check if the user is logged in
 $isLoggedIn = isset($_SESSION['user_id']) && isset($_SESSION['username']);
 $username = $isLoggedIn ? $_SESSION['username'] : '';
@@ -51,9 +57,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nextId = $row['total'] + 1;
         $lotNumber = "LOT-" . $today . "-" . str_pad($nextId, 3, '0', STR_PAD_LEFT);
 
+        // Check if the generated lot number already exists
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM auctions WHERE lot_number = :lot_number");
+        $stmt->bindParam(':lot_number', $lotNumber);
+        $stmt->execute();
+        $lotNumberCount = $stmt->fetchColumn();
+
+        // If the lot number already exists, increment nextId and regenerate the lot number
+        while ($lotNumberCount > 0) {
+            $nextId++; // Increment the ID to generate a new lot number
+            $lotNumber = "LOT-" . $today . "-" . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+
+            // Check again if the new lot number is unique
+            $stmt->execute();
+            $lotNumberCount = $stmt->fetchColumn();
+        }
+
         // Prepare SQL statement with placeholders
-        $sql = "INSERT INTO auctions (title, description, starting_price, auction_start_date, auction_end_date, user_id, image, lot_number)
-                VALUES (:title, :description, :starting_price, :auction_start_date, :auction_end_date, :user_id, :image, :lot_number)";
+        $sql = "INSERT INTO auctions (title, description, starting_price, auction_start_date, auction_end_date, user_id, category_id, image, lot_number)
+                VALUES (:title, :description, :starting_price, :auction_start_date, :auction_end_date, :user_id, :category_id, :image, :lot_number)";
 
         try {
             // Prepare the statement
@@ -68,6 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bindParam(':user_id', $user_id);
             $stmt->bindParam(':image', $imageData, PDO::PARAM_LOB);
             $stmt->bindParam(':lot_number', $lotNumber);
+            $stmt->bindParam(':category_id', $category_id); // Bind the category_id
 
             // Execute the statement
             $stmt->execute();
@@ -320,21 +343,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <a href="#">How It Works</a>
         <a href="contact.php">Contact</a>
     </nav>
-    <!-- Category Selection Modal -->
-    <div id="categoryModal" class="modal">
-        <div class="modal-content">
-            <h3>Select a Category</h3>
-            <select id="categorySelect" required>
-                <option value="">-- Choose Category of the item--</option>
-                <option value="Drawings">Drawings</option>
-                <option value="Paintings">Paintings</option>
-                <option value="Photographic Images">Photographic Images</option>
-                <option value="Sculptures">Sculptures</option>
-                <option value="Carvings">Carvings</option>
-            </select>
-            <button onclick="submitCategory()">Continue</button>
-        </div>
-    </div>
 
     <div class="auction-form-container">
         <h2>Add New Auction Item</h2>
@@ -346,7 +354,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
 
         <form action="addAuction.php" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="category" id="selectedCategory">
+            <label for="category">Category</label>
+            <select name="category" id="category" required>
+                <option value="">Select Category</option>
+                <?php foreach ($categories as $category): ?>
+                    <option value="<?php echo $category['category_id']; ?>"><?php echo $category['name']; ?></option>
+                <?php endforeach; ?>
+            </select>
+            <br><br>
+
 
             <label for="title">Title:</label>
             <input type="text" name="title" id="title" required><br><br>
@@ -365,7 +381,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
             <label for="image">Upload Image:</label>
-            
+
             <input type="file" name="image" id="image" accept="image/*"><br><br>
 
             <button type="submit">Add Auction Item</button>
@@ -375,71 +391,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <footer>
         &copy; 2025 Antique Art Auction. All rights reserved.
     </footer>
-    <script>
-        function submitCategory() {
-            const category = document.getElementById("categorySelect").value;
-            if (category === "") {
-                alert("Please select a category.");
-                return;
-            }
-
-            // Set hidden input in the form
-            document.getElementById("selectedCategory").value = category;
-
-            // Hide modal and show the form
-            document.getElementById("categoryModal").style.display = "none";
-            document.querySelector(".auction-form-container").style.display = "block";
-
-            // Adjust form fields based on selected category
-            adjustFormBasedOnCategory(category);
-        }
-
-        function adjustFormBasedOnCategory(category) {
-            const titleInput = document.getElementById("title");
-            const descriptionInput = document.getElementById("description");
-            const startingPriceInput = document.getElementById("starting_price");
-            const auctionStartDateInput = document.getElementById("auction_start_date");
-            const auctionEndDateInput = document.getElementById("auction_end_date");
-
-            // Reset form to default values
-            titleInput.value = '';
-            descriptionInput.value = '';
-            startingPriceInput.value = '';
-            auctionStartDateInput.value = '';
-            auctionEndDateInput.value = '';
-
-            // Update the form based on the selected category
-            switch (category) {
-                case "Drawings":
-                    descriptionInput.placeholder = "Provide details about the drawing, materials used, etc.";
-                    startingPriceInput.placeholder = "Enter starting price for the drawing";
-                    break;
-                case "Paintings":
-                    descriptionInput.placeholder = "Describe the painting's style, size, and artist.";
-                    startingPriceInput.placeholder = "Enter starting price for the painting";
-                    break;
-                case "Photographic Images":
-                    descriptionInput.placeholder = "Provide details about the photograph and its background.";
-                    startingPriceInput.placeholder = "Enter starting price for the photograph";
-                    break;
-                case "Sculptures":
-                    descriptionInput.placeholder = "Describe the sculpture's materials, artist, and history.";
-                    startingPriceInput.placeholder = "Enter starting price for the sculpture";
-                    break;
-                case "Carvings":
-                    descriptionInput.placeholder = "Describe the carving's materials and origin.";
-                    startingPriceInput.placeholder = "Enter starting price for the carving";
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        // Hide the form initially
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelector(".auction-form-container").style.display = "none";
-        });
-    </script>
 
 
 </body>

@@ -13,8 +13,8 @@ if (isset($_SESSION['login_success'])) {
 $isLoggedIn = isset($_SESSION['user_id']) && isset($_SESSION['username']);
 $username = $isLoggedIn ? $_SESSION['username'] : '';
 
-// Fetch all auctions
-$query = "SELECT * FROM auctions ORDER BY auction_start_date DESC";
+// Fetch all auctions with category name and user_id
+$query = "SELECT a.*, c.name AS category_name FROM auctions a LEFT JOIN category c ON a.category_id = c.category_id ORDER BY a.auction_start_date DESC";
 $stmt = $pdo->prepare($query);
 $stmt->execute();
 $auctions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -38,8 +38,7 @@ $auctions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <div class="search-container">
                 <form action="search.php" method="GET">
-                    <input type="text" name="query" placeholder="Search artworks..." required>
-                    <button type="submit">🔍</button>
+                    <button type="submit">Search</button>
                 </form>
             </div>
         </div>
@@ -88,13 +87,16 @@ $auctions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $highestBid = $bidResult['highest_bid'] ?? null;
             ?>
             <div class="item-card">
-                <img src="../Auction/getImage.php?id=<?= htmlspecialchars($auction['id']); ?>" alt="<?= htmlspecialchars($auction['title']); ?>">
+                <img src="../Auction/getImage.php?id=<?= htmlspecialchars($auction['id']); ?>"
+                    alt="<?= htmlspecialchars($auction['title']); ?>">
                 <div class="item-content">
                     <h3><?= htmlspecialchars($auction['title']); ?></h3>
                     <p><?= htmlspecialchars($auction['description']); ?><br><br>
                         Starting bid: $<?= htmlspecialchars($auction['starting_price']); ?>
                     </p>
                     <p>Lot Number: <?= htmlspecialchars($auction['lot_number']); ?></p>
+                    <p><strong>Category:</strong>
+                        <?= htmlspecialchars($auction['category_name'] ?? 'Category not provided'); ?></p>
 
                     <!-- Highest Bid -->
                     <?php if ($highestBid !== null): ?>
@@ -103,8 +105,15 @@ $auctions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <p><strong>No bids yet</strong></p>
                     <?php endif; ?>
 
+                    <?php if ($isLoggedIn): ?>
                     <!-- Start Bid Button -->
-                    <a href="start_bid.php?auction_id=<?= $auction['id']; ?>" class="btn btn-primary">Start Bid</a>
+                    <a href="start_bid.php?auction_id=<?= $auction['id']; ?>" class="btn btn-primary">Start Bid</a><br><br>
+                    <?php endif; ?>
+                    <!-- Edit/Delete buttons, only for the logged-in user who added the auction -->
+                    <?php if ($isLoggedIn && $auction['user_id'] == $_SESSION['user_id']): ?>
+                        <a href="./Auction/editAuction.php?id=<?= $auction['id']; ?>" class="btn btn-secondary">Edit</a>
+                        <a href="./Auction/deleteAuction.php?id=<?= $auction['id']; ?>" class="btn btn-danger">Delete</a>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -123,4 +132,5 @@ $auctions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </footer>
 
 </body>
+
 </html>
