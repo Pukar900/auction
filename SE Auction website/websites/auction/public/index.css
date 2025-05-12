@@ -22,7 +22,7 @@ header {
 }
 
 .logo img {
-    height: 60px;
+    height: 50px;
     border-radius: 10px;
 }
 
@@ -59,6 +59,40 @@ header {
     background-color: #c9ada7;
 }
 
+.balance-display {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #333;
+    font-weight: bold;
+}
+
+.balance-form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.balance-form input {
+    padding: 8px;
+    margin-bottom: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.balance-form button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.balance-form button:hover {
+    background-color: #45a049;
+}
 
 nav {
     background-color: #22223b;
@@ -169,12 +203,34 @@ nav a {
     background-color: #a10d1b;
 }
 
+.notifications-box {
+    background-color: #f9f9f9;
+    border-left: 5px solid #ffa500;
+    padding: 15px;
+    margin: 20px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.notifications-box h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.notifications-box ul {
+    padding-left: 20px;
+}
+
+.notifications-box li {
+    margin-bottom: 8px;
+}
+
+
 .add-auction-btn {
     display: inline-block;
     background-color: #4CAF50;
     color: white;
     padding: 10px 20px;
-    margin-left: 84%;
+    margin-left: 89%;
     border-radius: 5px;
     text-decoration: none;
     font-weight: bold;

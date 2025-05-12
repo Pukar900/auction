@@ -34,65 +34,74 @@ if (isset($_SESSION['user_id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Contact - Antique Art Auction</title>
     <link rel="stylesheet" href="contact.css">
 </head>
+
 <body>
-
-<header>
-    <h1>Antique Art Auction</h1>
-    <p>Bid on timeless masterpieces</p>
-</header>
-
-<nav>
-    <a href="../index.php">Home</a>
-    <a href="../current_auctions.php">Current Auctions</a>
-    <a href="../how_it_works.php">How It Works</a>
-   
-</nav>
-
-<div class="hero">
-    Get In Touch With Us
-</div>
-
-<section class="contact-section">
-    <h2>Contact Us</h2>
-
-    <?php if (!isset($_SESSION['user_id'])): ?>
-        <div class="message-box error">
-            Please <a href="../log/login.php">log in</a> to access the contact form.
+    <header>
+        <div class="header-top" style="position: relative;">
+            <div class="logo" style="position: absolute; top: 10px; left: 10px;">
+                <img src="../images/logo_f.jpg" alt="Logo" style="width: 200px; height: 50px;">
+            </div>
         </div>
-    <?php else: ?>
-        <?php if ($successMessage): ?>
-            <div class="message-box success"><?php echo htmlspecialchars($successMessage); ?></div>
-        <?php elseif ($errorMessage): ?>
-            <div class="message-box error"><?php echo htmlspecialchars($errorMessage); ?></div>
+
+
+        <h1>Antique Art Auction</h1>
+        <p>Bid on timeless masterpieces</p>
+    </header>
+
+    <nav>
+        <a href="../index.php">Home</a>
+        <a href="../current_auctions.php">Current Auctions</a>
+        <a href="../how_it_works.php">How It Works</a>
+
+    </nav>
+
+    <div class="hero">
+        Get In Touch With Us
+    </div>
+
+    <section class="contact-section">
+        <h2>Contact Us</h2>
+
+        <?php if (!isset($_SESSION['user_id'])): ?>
+            <div class="message-box error">
+                Please <a href="../log/login.php">log in</a> to access the contact form.
+            </div>
+        <?php else: ?>
+            <?php if ($successMessage): ?>
+                <div class="message-box success"><?php echo htmlspecialchars($successMessage); ?></div>
+            <?php elseif ($errorMessage): ?>
+                <div class="message-box error"><?php echo htmlspecialchars($errorMessage); ?></div>
+            <?php endif; ?>
+
+            <form method="POST">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required>
+
+                <label for="message">Your Message</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+
+                <button type="submit">Send Message</button>
+            </form>
         <?php endif; ?>
+    </section>
 
-        <form method="POST">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" required>
-
-            <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="subject">Subject</label>
-            <input type="text" id="subject" name="subject" required>
-
-            <label for="message">Your Message</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-
-            <button type="submit">Send Message</button>
-        </form>
-    <?php endif; ?>
-</section>
-
-<footer>
-    &copy; 2025 Antique Art Auction. All rights reserved.
-</footer>
+    <footer>
+        &copy; 2025 Antique Art Auction. All rights reserved.
+    </footer>
 
 </body>
+
 </html>

@@ -115,9 +115,9 @@ $auctions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             font-weight: bold;
         }
 
-        nav a:hover {
+        /* nav a:hover {
             color: #ffa;
-        }
+        } */
 
         
 
@@ -210,7 +210,7 @@ $auctions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <header>
         <div class="header-top">
             <div class="logo">
-                <img src="./images/logo.jpg" alt="Logo">
+                <img src="./images/logo_f.jpg" alt="Logo">
             </div>
             <div class="search-container">
                 <form action="search.php" method="GET">

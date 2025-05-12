@@ -160,7 +160,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
     <header>
         <div class="header-top">
             <div class="logo">
-                <img src="./images/logo.jpg" alt="Logo">
+                <img src="./images/logo_f.jpg" alt="Logo">
             </div>
             <div class="search-container">
                 <form action="search.php" method="GET">
